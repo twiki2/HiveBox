@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-APP_VERSION = "0.0.2"
+APP_VERSION = "0.3.0"
 
 BOX_IDS = [
     "5eba5fbad46fb8001b799786",
