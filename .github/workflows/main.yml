@@ -54,12 +54,21 @@ jobs:
 
       - name: Check /version endpoint
         run: |
-          response=$(curl -s http://127.0.0.1:5000/version)
+          for i in {1..10}; do
+            response=$(curl -s http://127.0.0.1:5000/version)
+            if [ -n "$response" ]; then
+              echo "Service is up!"
+              break
+            fi
+            echo "Waiting for container to start..."
+            sleep 2
+          done
           version=$(echo $response | jq -r '.version')
           if [ "$version" != "0.3.1" ]; then
             echo "Version mismatch: expected 0.3.1, got $version"
-            exit 1
+          exit 1
           fi
+
 
       - name: Run OpenSSF Scorecard
         uses: ossf/scorecard-action@v2.0.0
