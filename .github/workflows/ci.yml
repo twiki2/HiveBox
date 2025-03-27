@@ -1,0 +1,67 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Lint Dockerfile with hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+      - name: Run unit tests
+        run: pytest
+
+      - name: Build Docker image
+        run: docker build -t myapp .
+
+      - name: Run Docker container
+        run: docker run -d -p 5000:5000 --name myapp_container myapp
+
+      - name: Wait for container to start
+        run: sleep 5
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Check /version endpoint
+        run: |
+          response=$(curl -s http://localhost:5000/version)
+          version=$(echo $response | jq -r '.version')
+          if [ "$version" != "0.0.2" ]; then
+            echo "Version mismatch: expected 0.0.2, got $version"
+            exit 1
+          fi
+
+      - name: Run OpenSSF Scorecard
+        uses: ossf/scorecard-action@v2.0.0
+        with:
+          publish_results: true
