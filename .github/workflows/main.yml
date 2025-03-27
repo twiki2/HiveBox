@@ -56,7 +56,7 @@ jobs:
         run: |
           response=$(curl -s http://localhost:5000/version)
           version=$(echo $response | jq -r '.version')
-          if [ "$version" != "0.0.2" ]; then
+          if [ "$version" != "0.3.1" ]; then
             echo "Version mismatch: expected 0.0.2, got $version"
             exit 1
           fi
