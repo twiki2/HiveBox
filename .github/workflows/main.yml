@@ -27,10 +27,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint with flake8
+      - name: Lint with pylint
         run: |
-          pip install flake8
-          flake8 .
+          pip install pylint
+          pylint main.py test_main.py
 
       - name: Lint Dockerfile with hadolint
         uses: hadolint/hadolint-action@v3.1.0
