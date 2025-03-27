@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-APP_VERSION = "0.3.0"
+APP_VERSION = "0.3.1"
 
 BOX_IDS = [
     "5eba5fbad46fb8001b799786",
@@ -20,20 +20,19 @@ def average_temperature():
         try:
             response = requests.get(f"{OPEN_SENSE_MAP_API_URL}/{box_id}", timeout=5)
             box_data = response.json()
-            
+
             temp_sensor = next(
-                (sensor for sensor in box_data['sensors'] 
-                 if sensor['title'] == 'Temperatur'), 
+                (sensor for sensor in box_data['sensors'] if sensor['title'] == 'Temperatur'),
                 None
             )
-            
+
             if temp_sensor and 'lastMeasurement' in temp_sensor:
                 temperature = float(temp_sensor['lastMeasurement']['value'])
                 temperatures.append(temperature)
-        
+
         except (requests.RequestException, KeyError, ValueError) as e:
             print(f"Error fetching temperature for box {box_id}: {e}")
-    
+
     if temperatures:
         avg_temp = sum(temperatures) / len(temperatures)
         return jsonify({
@@ -41,8 +40,7 @@ def average_temperature():
             "unit": "°C",
             "boxes_used": len(temperatures)
         })
-    else:
-        return jsonify({"error": "No temperature data available"}), 404
+    return jsonify({"error": "No temperature data available"}), 404
 
 @app.route('/version')
 def version():
