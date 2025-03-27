@@ -73,4 +73,12 @@ jobs:
       - name: Run OpenSSF Scorecard
         uses: ossf/scorecard-action@v2.0.0
         with:
+          results_file: scorecard-results.json
+          results_format: json
           publish_results: true
+
+      - name: Upload Scorecard Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: scorecard-results
+          path: scorecard-results.json
