@@ -46,7 +46,7 @@ jobs:
         run: docker build -t myapp .
 
       - name: Run Docker container
-        run: docker run -d -p 5000:5000 --name myapp_container myapp
+        run: docker run -d -p 5000:5000 --env-file .env --name myapp_container myapp
 
       - name: Wait for container to start
         run: sleep 5
