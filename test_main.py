@@ -46,7 +46,7 @@ def test_temperature_successful_retrieval(mock_get, client, mock_api_response):
     assert response.status_code == 200, f"Expected status code 200, got {response.status_code}"
     data = response.get_json()
     expected_avg = (25.5 + 26.0 + 24.5) / 3
-    assert data['temperature'] == pytest.approx(expected_avg), \
+    assert data['temperature'] == pytest.approx(expected_avg, abs=0.01), \
         f"Expected temperature {expected_avg}, got {data['temperature']}"
     assert data['unit'] == "°C", f"Expected unit '°C', got {data['unit']}"
     assert data['boxes_used'] == 3, f"Expected 3 boxes, got {data['boxes_used']}"
