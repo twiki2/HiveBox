@@ -2,3 +2,5 @@ flask
 requests
 jsonify
 pytest
+python-dotenv
+prometheus-flask-exporter
