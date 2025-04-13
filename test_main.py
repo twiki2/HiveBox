@@ -30,7 +30,7 @@ def test_version_endpoint(client):
     response = client.get('/version')
     assert response.status_code == 200, f"Expected status code 200, got {response.status_code}"
     data = response.get_json()
-    assert data['version'] == "1.0.1", f"Expected version '1.0.1', got {data['version']}"
+    assert data['version'] == "1.0.2", f"Expected version '1.0.2', got {data['version']}"
     assert data['api_endpoints'] == ["/", "/temperature", "/version", "/metrics"], \
         f"Unexpected endpoints: {data['api_endpoints']}"
 

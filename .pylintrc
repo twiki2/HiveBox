@@ -1,2 +1,20 @@
+[MASTER]
+disable=
+    C0111, # missing-docstring
+    C0103, # invalid-name
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
+    C0116, # missing-function-docstring
+
+[FORMAT]
+max-line-length=100
+
 [MESSAGES CONTROL]
-disable=missing-docstring,too-few-public-methods
+disable=W0311,W0603,C0111,C0103,C0303
+
+[REPORTS]
+output-format=text
+reports=no
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,fd,fp

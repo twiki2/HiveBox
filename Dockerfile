@@ -6,8 +6,14 @@ COPY  requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY main.py .
+COPY . .
+
+ENV FLASK_APP=main.py
+ENV PYTHONUNBUFFERED=1
 
 EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:5000/version || exit 1
 
 CMD ["python","main.py"]
