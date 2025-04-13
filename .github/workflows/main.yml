@@ -41,6 +41,8 @@ jobs:
 
       - name: Run unit tests
         run: pytest
+      - name: OSSF Scorecard action
+        uses: ossf/scorecard-action@v2.4.1
 
       - name: Build Docker image
         run: docker build -t myapp .
@@ -70,5 +72,6 @@ jobs:
             echo "Version mismatch: expected 0.3.1, got $version"
           exit 1
           fi
+
 
 
