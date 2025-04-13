@@ -66,8 +66,8 @@ jobs:
             sleep 2
           done
           version=$(echo $response | jq -r '.version')
-          if [ "$version" != "0.3.1" ]; then
-            echo "Version mismatch: expected 0.3.1, got $version"
+          if [ "$version" != "1.0.1" ]; then
+            echo "Version mismatch: expected 1.0.1, got $version"
           exit 1
           fi
 
