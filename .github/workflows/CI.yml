@@ -87,7 +87,6 @@ jobs:
             -Dsonar.organization=twiki2
             -Dsonar.python.version=3.13
             -Dsonar.python.coverage.reportPaths=coverage.xml
-
   build:
     runs-on: ubuntu-latest
     needs: [test, integration_test]
@@ -106,23 +105,29 @@ jobs:
         run: |
           docker stop myapp_container
           docker rm myapp_container
-
   terrascan_job:
-    runs-on: ubuntu-latest
-    name: terrascan-action
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Run Terrascan
-        id: terrascan
-        uses: tenable/terrascan-action@v1.8.0
-        with:
-          iac_type: 'terraform'
-          iac_version: 'v14'
-          policy_type: 'aws'
-          only_warn: true
-          sarif_upload: true
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: terrascan.sarif
+            runs-on: ubuntu-latest
+            name: terrascan-action
+            steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+            - name: Run Terrascan
+              id: terrascan
+              uses: tenable/terrascan-action@main
+              with:
+                iac_type: 'terraform'
+                iac_version: 'v14'
+                policy_type: 'aws'
+                only_warn: true
+                sarif_upload: true
+                #non_recursive:
+                #iac_dir:
+                #policy_path:
+                #skip_rules:
+                #config_path:
+                #webhook_url:
+                #webhook_token:
+            - name: Upload SARIF file
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                sarif_file: terrascan.sarif
