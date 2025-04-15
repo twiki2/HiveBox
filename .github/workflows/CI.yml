@@ -81,7 +81,7 @@ jobs:
               with:
                 args: >
                   -Dsonar.projectKey=${{ github.repository }}
-                  -Dsonar.python.version=3.12
+                  -Dsonar.python.version=3.13
                   -Dsonar.python.coverage.reportPaths=coverage.xml
 
   build:

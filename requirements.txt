@@ -4,3 +4,4 @@ jsonify
 pytest
 python-dotenv
 prometheus-flask-exporter
+pylint
