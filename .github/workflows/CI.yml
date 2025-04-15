@@ -83,7 +83,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=twiki2
+            -Dsonar.projectKey=twiki2_hivebox
             -Dsonar.organization=Mostafa-Gamal
             -Dsonar.python.version=3.13
             -Dsonar.python.coverage.reportPaths=coverage.xml
