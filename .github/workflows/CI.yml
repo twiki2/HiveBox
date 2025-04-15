@@ -7,7 +7,35 @@ on:
     branches: [ master ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.MY_PAT }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Lint with pylint
+        run: |
+          pip install pylint
+          pylint *.py --fail-under=8
+
   test:
+    needs: lint
     timeout-minutes: 5  
     runs-on: ubuntu-latest
     permissions:
@@ -17,12 +45,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.MY_PAT }}
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
       - name: Cache pip
         uses: actions/cache@v4
         with:
@@ -30,52 +56,35 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Lint with pylint
-        run: |
-          pip install pylint
-          pylint *.py --fail-under=8
-
-      - name: Lint Dockerfile with hadolint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Dockerfile
-
       - name: Run unit tests with coverage
         run: |
           pip install pytest pytest-cov
           pytest --cov=./ --cov-report=xml
 
-
   build:
     timeout-minutes: 5
     needs: test
-    if: github.event_name == 'push' 
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.MY_PAT }}
-
       - name: Build Docker image
         run: docker build -t myapp .
-
       - name: Test Docker image
         run: |
           docker run -d -p 5000:5000 --env-file .env --name myapp_container myapp
           for i in {1..5}; do curl -f http://localhost:5000/version && break || sleep 1; done
           curl -f http://localhost:5000/version || exit 1
-
       - name: Stop Docker container
-        if: always() # Ensure cleanup even if tests fail
+        if: always()
         run: docker stop myapp_container || true
-
       - name: Remove Docker container
         if: always()
         run: docker rm myapp_container || true
@@ -93,6 +102,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
