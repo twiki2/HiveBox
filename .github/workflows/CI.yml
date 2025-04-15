@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -32,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -55,13 +55,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run integration tests
         run: pytest test_integration.py
+  sonarqube:
+          runs-on: ubuntu-latest
+          needs: test
+          steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Download coverage report
+              uses: actions/download-artifact@v4
+              with:
+                name: coverage-report
+                path: .
+            - name: SonarQube Scan
+              uses: sonarsource/sonarqube-scan-action@v2
+              env:
+                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+              with:
+                args: >
+                  -Dsonar.projectKey=${{ github.repository }}
+                  -Dsonar.python.version=3.12
+                  -Dsonar.python.coverage.reportPaths=coverage.xml
 
   build:
     runs-on: ubuntu-latest
@@ -82,24 +103,4 @@ jobs:
           docker stop myapp_container
           docker rm myapp_container
 
-  sonarqube:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-          path: .
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ github.repository }}
-            -Dsonar.python.version=3.12
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+
