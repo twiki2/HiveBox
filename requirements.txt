@@ -5,3 +5,4 @@ pytest
 python-dotenv
 prometheus-flask-exporter
 pylint
+pytest-cov
