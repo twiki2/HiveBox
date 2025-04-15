@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hivebox-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hivebox-api
+  template:
+    metadata:
+      labels:
+        app: hivebox-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+    spec:
+      containers:
+      - name: hivebox
+        image: ghcr.io/twiki2/hivebox:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: BOX_IDS
+          value: "5eba5fbad46fb8001b799786,5c21ff8f919bf8001adf2488,5ade1acf223bd80019a1011c"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
