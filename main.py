@@ -25,9 +25,9 @@ metrics = PrometheusMetrics(app)
 def get_temperature_status(temp):
     if temp < 10:
         return "Too Cold"
-    elif temp > 37:
+    if temp > 37:
         return "Too Hot"
-    elif 11 <= temp <= 36:
+    if 11 <= temp <= 36:
         return "Good"
     return "Can't Decide"
 
@@ -54,9 +54,9 @@ def average_temperature():
                 temperatures.append(temperature)
 
         except requests.RequestException as e:
-            logger.error(f"Error fetching temperature for box {box_id}: {e}")
+            logger.error("Error fetching temperature for box %s: %s", box_id, e)
         except (KeyError, ValueError) as e:
-            logger.error(f"Error processing data for box {box_id}: {e}")
+            logger.error("Error processing data for box %s: %s", box_id, e)
 
     if not temperatures:
         return jsonify({"error": "No temperature data available"}), 404
