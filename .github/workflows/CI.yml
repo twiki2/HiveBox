@@ -84,7 +84,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=${{ github.repository }}
-            -Dsonar.organization=Mostafa-Gamal
+            -Dsonar.organization=twiki2
             -Dsonar.python.version=3.13
             -Dsonar.python.coverage.reportPaths=coverage.xml
 
