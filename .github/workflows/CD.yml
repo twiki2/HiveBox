@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    if: github.event.workflow_run.conclusion == 'success'
+    #if: github.event.workflow_run.conclusion == 'success'
     
     steps:
       - name: Checkout code
@@ -33,4 +33,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/hivebox:latest
+          tags: ghcr.io/twiki2/hivebox:latest
